@@ -47,7 +47,7 @@ key length == known header length
     secretse<,
     secretse<-
 
-Use you brain for extracting correct key (repetition, key not complete, existing words, etc)
+Use you brain for extracting the correct key (repetition, key not complete, existing words, etc)
 
 ####Add your customs headers and headers with unknown bytes
     Modify xorstuff.py and add your custom header in the list_types disctionary.
