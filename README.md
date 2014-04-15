@@ -50,6 +50,6 @@ key length == known header length
 Use you brain for extracting the correct key (repetition, key not complete, existing words, etc)
 
 ####Add your customs headers and headers with unknown bytes
-    Modify xorstuff.py and add your custom header in the list_types disctionary.
+    Modify xorstuff.py and add your custom header in the list_types dictionary.
 
     If the header contains unknown bytes, replace them with %s, the script will bruteforce them.
