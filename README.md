@@ -53,3 +53,6 @@ Usage :
 ####Add your customs headers and headers with unknown bytes
     Add your custom class in ./modules/ and extends ModuleBaseClass
     look at ModuleBaseClass.py for doc and ./modules/*.py for examples.
+
+####TODO
+ - Add validation in modules elf and wav
