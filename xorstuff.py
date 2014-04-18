@@ -8,13 +8,27 @@ import shutil
 import os
 import string
 from subprocess import Popen, PIPE
+import glob
+from moduleBaseClass import ModuleBaseClass
+from guess_keylength import GuessKeyLength
 
-list_types = {'elf': '\x45\x6C\x66\x46\x69\x6C\x65\x00',
-              'bmp': '\x42\x4d',
-              'jpg': '\xFF\xD8\xFF\xE1',
-              'png': '\x89\x50\x4E\x47\x0D\x0A\x1A\x0A',
-              'wav': '\x52\x49\x46\x46'}
+list_types = {}
 
+def loadFilesTypes(path):
+    list_types = {}
+    files = glob.glob(path + "*")
+    for file in files:
+        file_name, file_extension = os.path.splitext(file)
+        if not file_name.endswith("__init__") and file_extension == ".py":
+            module_name = file_name.replace("/", ".")
+            mod = __import__(module_name)
+            modules = module_name.split('.')
+            for module in modules[1:]:
+                mod = getattr(mod, module)
+                if issubclass(mod.Module, ModuleBaseClass):
+                    instance = mod.Module()
+                    list_types[instance.name] = instance
+    return list_types
 
 def xor(data, key):
     return ''.join(chr(ord(x) ^ ord(y)) for (x,y) in izip(data, cycle(key)))
@@ -34,6 +48,9 @@ def getFileContent(filepath, length=None):
     return bin_file
 
 if __name__ == "__main__":
+
+    # Load modules
+    list_types = loadFilesTypes('modules/')
 
     parser = argparse.ArgumentParser(description='xor stuff with other stuff')
     parser.add_argument('-f', '--file', 
@@ -55,6 +72,10 @@ if __name__ == "__main__":
                         dest='xor_key',
                         default=None,
                         help='xor with given key')
+    parser.add_argument('-g', '--guess',
+                        action='store_true',
+                        dest='guess_length',
+                        help='Try to guess the key length')
     args = parser.parse_args()
 
     # xor with one key
@@ -63,18 +84,41 @@ if __name__ == "__main__":
         xored_data = xor(file, args.xor_key)
         print xored_data
         exit(0)
+    elif args.type is None or args.filename is None:
+        print "Select file type (-t) and filename (-f)"
+        exit(0)
 
+    print "[*] Open file"
+    bin_file = getFileContent(args.filename)
+    file_type = list_types[args.type]
     # select correct header
-    header = list_types[args.type]
+    header = file_type.header
 
     # pad for bruteforce
     key_length = len(header)
     if args.key_length is not None:
-            if int(args.key_length) > len(header):
-                header = "%s%s" % (header, '%s' * (int(args.key_length) - len(header.replace('%s', '?'))))
             key_length = int(args.key_length)
+    elif args.guess_length:
+        guess = GuessKeyLength()
+        print "[*] Guess key length"
+        key_length = guess.guess_key_length(bin_file)
+        fitnesses = guess.print_fitnesses()
+        divisors = guess.guess_and_print_divisors()
+
+        print "[*] Probable key length"
+        for fitness in fitnesses:
+            print "    %s : %s%%" % (fitness['length'], fitness['percents'])
+
+        print "[*] Most probable key length is %s*n" % divisors
+
+    print "[*] Key length set to %d" % key_length
+
+    # Padding of header with %s if key length > header length
+    if int(key_length) > len(header):
+        header = "%s%s" % (header, '%s' * (int(key_length) - len(header.replace('%s', '?'))))
+
     bf_length = header.count('%s')
-    bin_file = getFileContent(args.filename, len(header.replace('%s', '?')))
+    bin_header = getFileContent(args.filename, len(header.replace('%s', '?')))
 
     charset = ''.join([chr(i) for i in range(128)])
     key_charset = string.ascii_letters + string.digits + string.punctuation
@@ -82,7 +126,9 @@ if __name__ == "__main__":
     # generate keys
     for char in itertools.product(charset, repeat=bf_length):
         generated_header = header % char
-        output = xor(bin_file,generated_header)
+        output = xor(bin_header, generated_header)
         key = output[0: key_length]
         if not [c for c in key if c not in key_charset]:
-            print key
+            raw = xor(bin_file, key)
+            if file_type.check(raw):
+                print key
