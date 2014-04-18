@@ -12,8 +12,5 @@ class Module(ModuleBaseClass):
         else:
             return False
 
-    def live_check(self, raw):
-        if not [c for c in raw if c not in string.printable]:
-            return True
-        else:
-            return False
+    def live_check(self, byte):
+        return (byte is in string.printable)

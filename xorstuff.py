@@ -30,8 +30,18 @@ def loadFilesTypes(path):
                     list_types[instance.name] = instance
     return list_types
 
-def xor(data, key):
-    return ''.join(chr(ord(x) ^ ord(y)) for (x,y) in izip(data, cycle(key)))
+def xor(data, key, file_type=None):
+    result = []
+    for data, char_key in izip(data, cycle(key)):
+        byte = chr(ord(data) ^ ord(char_key))
+        if file_type is not None:
+            try:
+                if !file_type.live_check(byte):
+                    return None
+            except:
+                continue
+        result.append(byte)
+    return ''.join(result)
 
 def getFileContent(filepath, length=None):
     bin_file = ''
@@ -129,6 +139,7 @@ if __name__ == "__main__":
         output = xor(bin_header, generated_header)
         key = output[0: key_length]
         if not [c for c in key if c not in key_charset]:
-            raw = xor(bin_file, key)
-            if file_type.check(raw):
-                print key
+            raw = xor(bin_file, key, file_type)
+            if raw is not None:
+                if file_type.final_check(raw):
+                    print key

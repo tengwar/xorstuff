@@ -12,7 +12,7 @@ class ModuleBaseClass:
         """
         raise 'Not Implemented'
 
-    def live_check(self, raw):
+    def live_check(self, byte):
         """Check performed during the xor process
 
         """
