@@ -107,6 +107,7 @@ if __name__ == "__main__":
     key_length = len(header)
     if args.key_length is not None:
             key_length = int(args.key_length)
+            fitnesses = [{'length': key_length, 'percents': 100}]
     else:
         guess = GuessKeyLength()
         print "[*] Guess key length"
