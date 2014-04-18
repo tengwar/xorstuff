@@ -16,9 +16,10 @@ optional arguments:
 
     -h, --help            show this help message and exit
     -f FILENAME, --file FILENAME
-    -t {wav,bmp,elf,png,jpg}, --type {wav,bmp,elf,png,jpg}
+    -t {wav,bmp,elf,png,jpg,text}, --type {wav,bmp,elf,png,jpg,text}
     -l KEY_LENGTH, --length KEY_LENGTH
     -x XOR_KEY, --xor XOR_KEY (xor with given key)
+    -g, --grep            Search pattern in result
 
 Usage :
 -------
@@ -30,26 +31,30 @@ Usage :
 ####Recover key with known length:
 
     foo@bar ~/xorstuff> ./xorstuff.py -f ./test_files/xored_file.png -t png -l 6
-    my_key
+    [*] Open file
+    [*] Key length set to 6
+    secret
     
 ####Recover key with unknown length:
     
     foo@bar ~/xorstuff> ./xorstuff.py -f ./test_files/xored_file.png -t png
-    my_keymy
+    [*] Open file
+    [*] Guess key length
+    [*] Probable key length
+        1 : 39.1%
+        6 : 27.3%
+        9 : 18.7%
+        12 : 14.8%
+    [*] Most probable key length is 3*n
+    [*] Key length set to 1
     
-key length == known header length
+Try with the second most probable key length :
 
-####bruteforce last bytes :
-    foo@bar ~/xorstuff> ./xorstuff.py -f ./test_files/xored_file.png -t png -l 10
-    secretsecr
-    secretsecs
-    [........]
-    secretse<,
-    secretse<-
-
-Use you brain for extracting the correct key (repetition, key not complete, existing words, etc)
+    foo@bar ~/xorstuff> ./xorstuff.py --file ./test_files/xored_file.png  --type png --length 6
+    [*] Open file
+    [*] Key length set to 6
+    secret
 
 ####Add your customs headers and headers with unknown bytes
-    Modify xorstuff.py and add your custom header in the list_types dictionary.
-
-    If the header contains unknown bytes, replace them with %s, the script will bruteforce them.
+    Add your custom class in ./modules/ and extends ModuleBaseClass
+    look at ModuleBaseClass.py for doc and ./modules/*.py for examples.
