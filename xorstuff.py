@@ -36,7 +36,7 @@ def xor(data, key, file_type=None):
         byte = chr(ord(data) ^ ord(char_key))
         if file_type is not None:
             try:
-                if !file_type.live_check(byte):
+                if not file_type.live_check(byte):
                     return None
             except:
                 continue
