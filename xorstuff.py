@@ -11,6 +11,7 @@ from subprocess import Popen, PIPE
 import glob
 from moduleBaseClass import ModuleBaseClass
 from guess_keylength import GuessKeyLength
+from operator import itemgetter
 
 list_types = {}
 
@@ -79,12 +80,11 @@ if __name__ == "__main__":
                         dest='xor_key',
                         default=None,
                         help='xor with given key')
-    """
-    parser.add_argument('-g', '--guess',
+    parser.add_argument('-g', '--grep',
                         action='store_true',
-                        dest='guess_length',
-                        help='Try to guess the key length')
-    """
+                        dest='grep',
+                        default=None,
+                        help='Search pattern in result')
     args = parser.parse_args()
 
     # xor with one key
@@ -114,6 +114,7 @@ if __name__ == "__main__":
         fitnesses = guess.print_fitnesses()
         divisors = guess.guess_and_print_divisors()
         print "[*] Probable key length"
+        fitnesses = sorted(fitnesses, key=lambda fitness: float(fitness['percents']), reverse=True) 
         for fitness in fitnesses:
             print "    %s : %s%%" % (fitness['length'], fitness['percents'])
         print "[*] Most probable key length is %s*n" % divisors
@@ -139,4 +140,8 @@ if __name__ == "__main__":
             raw = xor(bin_file, key, file_type)
             if raw is not None:
                 if file_type.final_check(raw):
-                    print key
+                    if args.grep is not None:
+                        if args.grep in raw:
+                            print key
+                    else:
+                        print key
