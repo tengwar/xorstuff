@@ -47,11 +47,6 @@ Usage :
         12 : 14.8%
     [*] Most probable key length is 3*n
     [*] Key length set to 1
-    
-Try with the second most probable key length :
-
-    foo@bar ~/xorstuff> ./xorstuff.py --file ./test_files/xored_file.png  --type png --length 6
-    [*] Open file
     [*] Key length set to 6
     secret
 

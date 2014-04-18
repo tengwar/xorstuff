@@ -119,29 +119,31 @@ if __name__ == "__main__":
             print "    %s : %s%%" % (fitness['length'], fitness['percents'])
         print "[*] Most probable key length is %s*n" % divisors
 
-    print "[*] Key length set to %d" % key_length
+    for fitness in fitnesses:
+        key_length = int(fitness['length'])
+        print "[*] Key length set to %d" % key_length
 
-    # Padding of header with %s if key length > header length
-    if int(key_length) > len(header):
-        header = "%s%s" % (header, '%s' * (int(key_length) - len(header.replace('%s', '?'))))
+        # Padding of header with %s if key length > header length
+        if int(key_length) > len(header):
+            header = "%s%s" % (header, '%s' * (int(key_length) - len(header.replace('%s', '?'))))
 
-    bf_length = header.count('%s')
-    bin_header = getFileContent(args.filename, len(header.replace('%s', '?')))
+        bf_length = header.count('%s')
+        bin_header = getFileContent(args.filename, len(header.replace('%s', '?')))
 
-    charset = ''.join([chr(i) for i in range(128)])
-    key_charset = string.ascii_letters + string.digits + string.punctuation
+        charset = ''.join([chr(i) for i in range(128)])
+        key_charset = string.ascii_letters + string.digits + string.punctuation
 
-    # generate keys
-    for char in itertools.product(charset, repeat=bf_length):
-        generated_header = header % char
-        output = xor(bin_header, generated_header)
-        key = output[0: key_length]
-        if not [c for c in key if c not in key_charset]:
-            raw = xor(bin_file, key, file_type)
-            if raw is not None:
-                if file_type.final_check(raw):
-                    if args.grep is not None:
-                        if args.grep in raw:
+        # generate keys
+        for char in itertools.product(charset, repeat=bf_length):
+            generated_header = header % char
+            output = xor(bin_header, generated_header)
+            key = output[0: key_length]
+            if not [c for c in key if c not in key_charset]:
+                raw = xor(bin_file, key, file_type)
+                if raw is not None:
+                    if file_type.final_check(raw):
+                        if args.grep is not None:
+                            if args.grep in raw:
+                                print key
+                        else:
                             print key
-                    else:
-                        print key
