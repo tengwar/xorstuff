@@ -5,5 +5,5 @@ class Module(ModuleBaseClass):
         self.header = '\x52\x49\x46\x46'
         self.name = 'wav'
 
-    def check(self, raw):
+    def final_check(self, raw):
         return True

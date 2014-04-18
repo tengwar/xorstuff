@@ -5,5 +5,5 @@ class Module(ModuleBaseClass):
         self.header = '\x45\x6C\x66\x46\x69\x6C\x65\x00'
         self.name = 'elf'
 
-    def check(self, raw):
+    def final_check(self, raw):
         return True

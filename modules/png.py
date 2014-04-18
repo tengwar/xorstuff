@@ -7,7 +7,7 @@ class Module(ModuleBaseClass):
         self.header = '\x89\x50\x4E\x47\x0D\x0A\x1A\x0A'
         self.name = 'png'
 
-    def check(self, raw):
+    def final_check(self, raw):
         try:
             Image.open(StringIO(raw))
             return True

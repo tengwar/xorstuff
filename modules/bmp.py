@@ -7,7 +7,7 @@ class Module(ModuleBaseClass):
         self.header = 'x42\x4d'
         self.name = 'bmp'
 
-    def check(self, raw):
+    def final_check(self, raw):
         try:
             Image.open(StringIO(raw))
             return True

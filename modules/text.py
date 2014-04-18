@@ -6,7 +6,13 @@ class Module(ModuleBaseClass):
         self.header = ''
         self.name = 'text'
 
-    def check(self, raw):
+    def final_check(self, raw):
+        if not [c for c in raw if c not in string.printable]:
+            return True
+        else:
+            return False
+
+    def live_check(self, raw):
         if not [c for c in raw if c not in string.printable]:
             return True
         else:
