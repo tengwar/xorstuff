@@ -13,4 +13,4 @@ class Module(ModuleBaseClass):
             return False
 
     def live_check(self, byte):
-        return (byte is in string.printable)
+        return (byte in string.printable)
