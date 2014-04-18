@@ -10,10 +10,10 @@ class ModuleBaseClass:
         """Check performed after the full file is generated
 
         """
-        raise 'Not Implemented'
+        return True
 
     def live_check(self, byte):
         """Check performed during the xor process
 
         """
-        raise 'Not Implemented'
+        return True

@@ -35,11 +35,8 @@ def xor(data, key, file_type=None):
     for data, char_key in izip(data, cycle(key)):
         byte = chr(ord(data) ^ ord(char_key))
         if file_type is not None:
-            try:
-                if not file_type.live_check(byte):
-                    return None
-            except:
-                continue
+            if not file_type.live_check(byte):
+                return None
         result.append(byte)
     return ''.join(result)
 
@@ -82,10 +79,12 @@ if __name__ == "__main__":
                         dest='xor_key',
                         default=None,
                         help='xor with given key')
+    """
     parser.add_argument('-g', '--guess',
                         action='store_true',
                         dest='guess_length',
                         help='Try to guess the key length')
+    """
     args = parser.parse_args()
 
     # xor with one key
@@ -108,17 +107,15 @@ if __name__ == "__main__":
     key_length = len(header)
     if args.key_length is not None:
             key_length = int(args.key_length)
-    elif args.guess_length:
+    else:
         guess = GuessKeyLength()
         print "[*] Guess key length"
         key_length = guess.guess_key_length(bin_file)
         fitnesses = guess.print_fitnesses()
         divisors = guess.guess_and_print_divisors()
-
         print "[*] Probable key length"
         for fitness in fitnesses:
             print "    %s : %s%%" % (fitness['length'], fitness['percents'])
-
         print "[*] Most probable key length is %s*n" % divisors
 
     print "[*] Key length set to %d" % key_length
