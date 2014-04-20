@@ -4,10 +4,8 @@ import argparse
 import itertools
 from itertools import izip, cycle, product
 from sys import exit
-import shutil
 import os
 import string
-from subprocess import Popen, PIPE
 import glob
 from moduleBaseClass import ModuleBaseClass
 from guess_keylength import GuessKeyLength
@@ -136,7 +134,7 @@ if __name__ == "__main__":
     bin_file = xor_stuff.getFileContent(args.filename)
     xor_stuff.set_file_type(args.type)
 
-    # Search key length
+    # Set key length
     key_length = len(xor_stuff.file_type.header)
     if args.key_length is not None:
             key_length = int(args.key_length)
