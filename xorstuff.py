@@ -17,6 +17,7 @@ class XorStuff:
 
     def __init__(self, list_types={}):
         self.list_types = list_types
+        self.file_type = None
 
     def loadFilesTypes(self, path):
         list_types = {}
@@ -58,8 +59,8 @@ class XorStuff:
                     index = index + 1
         return bin_file
 
-    def get_pass(self, bin_file, file_type, key_length, grep=None):
-        header = file_type.header
+    def get_pass(self, bin_file, key_length, grep=None):
+        header = self.file_type.header
         # Padding of header with %s if key length > header length
         if int(key_length) > len(header):
             header = "%s%s" % (header, '%s' * (int(key_length) - len(header.replace('%s', '?'))))
@@ -76,14 +77,17 @@ class XorStuff:
             output = self.xor(bin_header, generated_header)
             key = output[0: key_length]
             if not [c for c in key if c not in key_charset]:
-                raw = self.xor(bin_file, key, file_type)
+                raw = self.xor(bin_file, key, self.file_type)
                 if raw is not None:
-                    if file_type.final_check(raw):
+                    if self.file_type.final_check(raw):
                         if grep is not None:
                             if grep in raw:
                                 yield key
                         else:
                             yield key
+
+    def set_file_type(self, file_type):
+        self.file_type = self.list_types[file_type]
 
 if __name__ == "__main__":
 
@@ -130,10 +134,10 @@ if __name__ == "__main__":
     # Open input file
     print "[*] Open file"
     bin_file = xor_stuff.getFileContent(args.filename)
-    file_type = xor_stuff.list_types[args.type]
+    xor_stuff.set_file_type(args.type)
 
     # Search key length
-    key_length = len(file_type.header)
+    key_length = len(xor_stuff.file_type.header)
     if args.key_length is not None:
             key_length = int(args.key_length)
             fitnesses = [{'length': key_length, 'percents': 100}]
@@ -154,5 +158,5 @@ if __name__ == "__main__":
         key_length = int(fitness['length'])
         print "[*] Key length set to %d" % key_length
 
-        for password in xor_stuff.get_pass(bin_file, file_type, key_length, args.grep):
+        for password in xor_stuff.get_pass(bin_file, key_length, args.grep):
             print password
