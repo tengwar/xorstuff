@@ -7,7 +7,7 @@ mostly usefull in ctf.
 
 Input arguments :
 -----------------
-usage: xorstuff.py [-h] [-f FILENAME] [-t {wav,bmp,elf,png,jpg}]
+usage: main.py [-h] [-f FILENAME] [-t {wav,bmp,elf,png,jpg}]
                    [-l KEY_LENGTH] [-x XOR_KEY]
 
 xor stuff with other stuff
@@ -26,18 +26,19 @@ Usage :
 
 ####xor file with known key:
 
-    foo@bar ~/xorstuff> /xorstuff.py -f input_file.png -x my_key > ./output_file.png 
+    foo@bar ~/xorstuff> /mai.py -f input_file.png -x my_key > ./output_file.png 
 
 ####Recover key with known length:
 
-    foo@bar ~/xorstuff> ./xorstuff.py -f ./test_files/xored_file.png -t png -l 6
+    foo@bar ~/xorstuff> ./main.py -f ./test_files/xored_file.png -t png -l 6
     [*] Open file
     [*] Key length set to 6
+    [*] Start searching password
     secret
     
 ####Recover key with unknown length:
     
-    foo@bar ~/xorstuff> ./xorstuff.py -f ./test_files/xored_file.png -t png
+    foo@bar ~/xorstuff> ./main.py -f ./test_files/xored_file.png -t png
     [*] Open file
     [*] Guess key length
     [*] Probable key length
@@ -47,7 +48,9 @@ Usage :
         12 : 14.8%
     [*] Most probable key length is 3*n
     [*] Key length set to 1
+    [*] Start searching password
     [*] Key length set to 6
+    [*] Start searching password
     secret
 
 ####Add your customs headers and headers with unknown bytes
