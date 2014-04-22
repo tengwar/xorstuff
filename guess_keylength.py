@@ -11,9 +11,8 @@ class GuessKeyLength:
         self.max_key_length = 16
 
     def guess_key_length(self, text):
-        """
-        Try key lengths from 1 to max_key_length and print local maximums.
-        Set key_length to the most possible if it's not set by user.
+        """Try key lengths from 1 to max_key_length and print local maximums.
+           Set key_length to the most possible if it's not set by user.
         """
         fitnesses = self.calculate_fitnesses(text)
         self.fitnesses = fitnesses
@@ -21,8 +20,8 @@ class GuessKeyLength:
 
 
     def calculate_fitnesses(self, text):
-        """
-        Calc. fitnesses for each keylen
+        """ Calc. fitnesses for each keylen
+
         """
         prev = 0
         pprev = 0
@@ -43,12 +42,15 @@ class GuessKeyLength:
         return fitnesses
 
     def calculate_fitness_sum(self, fitnesses):
+        """Calculate sum of fitnesses
+
+        """
         return sum([f[1] for f in fitnesses])
 
 
     def count_equals(self, text, key_length):
-        """
-        count equal chars count for each offset and sum them
+        """Count equal chars count for each offset and sum them
+
         """
         equals_count = 0
         if key_length >= len(text):
@@ -60,6 +62,9 @@ class GuessKeyLength:
         return equals_count
 
     def get_max_fitnessed_key_length(self, fitnesses):
+        """Get the most probable key length
+
+        """
         max_fitness = 0
         max_fitnessed_key_length = 0
         for key_length, fitness in fitnesses:
@@ -70,6 +75,9 @@ class GuessKeyLength:
 
 
     def chars_count_at_offset(self, text, key_length, offset):
+        """Get char count for given text, key length and offset
+
+        """
         chars_count = dict()
         for pos in range(offset, len(text), key_length):
             c = text[pos]
@@ -80,8 +88,8 @@ class GuessKeyLength:
         return chars_count
 
     def guess_and_print_divisors(self):
-        """
-        Prints common divisors and returns the most common divisor
+        """ Prints common divisors and returns the most common divisor
+
         """
         fitnesses = self.fitnesses
         divisors_counts = [0] * (self.max_key_length + 1)
@@ -102,6 +110,9 @@ class GuessKeyLength:
         return ret
 
     def print_fitnesses(self):
+        """Get fitnesses
+
+        """
         # top sorted by fitness, but print sorted by length
         result = []
         fitnesses = self.fitnesses
