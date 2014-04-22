@@ -1,10 +1,10 @@
 import itertools
-from itertools import izip, cycle, product
+from itertools import izip, cycle
 import os
 import string
 import glob
 from moduleBaseClass import ModuleBaseClass
-from operator import itemgetter
+
 
 class XorStuff:
 
@@ -15,7 +15,7 @@ class XorStuff:
         self.file_type = None
         self.list_types = self.load_files_types('modules/')
         if filepath is not None:
-            self.file_content = set_file_content(filepath)
+            self.file_content = self.set_file_content(filepath)
 
     def load_files_types(self, path):
         """Load all modules from modules/ and make them available
@@ -65,7 +65,7 @@ class XorStuff:
                     if index == length:
                         break
                     index = index + 1
-        self.file_content =  bin_file
+        self.file_content = bin_file
 
     def get_pass(self, key_length, grep=None):
         """Try to recover key(s) for a given length and yield them
@@ -73,10 +73,14 @@ class XorStuff:
         """
         # Padding of header with %s if key length > header length
         if int(key_length) > len(self.file_type.header):
-            self.file_type.header = "%s%s" % (self.file_type.header, '%s' * (int(key_length) - len(self.file_type.header.replace('%s', '?'))))
+            header_no_formatters = self.file_type.header.replace('%s', '?')
+            formatters = '%s' * (int(key_length) - len(header_no_formatters))
+            self.file_type.header = "%s%s" % (self.file_type.header,
+                                              formatters)
 
         bf_length = self.file_type.header.count('%s')
-        bin_header = self.file_content[:-len(self.file_type.header.replace('%s', '?'))]
+        header_length = len(self.file_type.header.replace('%s', '?'))
+        bin_header = self.file_content[:header_length]
 
         charset = ''.join([chr(i) for i in range(128)])
         key_charset = string.ascii_letters + string.digits + string.punctuation

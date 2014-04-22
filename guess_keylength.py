@@ -5,6 +5,7 @@
 
 from operator import itemgetter
 
+
 class GuessKeyLength:
 
     def __init__(self):
@@ -18,7 +19,6 @@ class GuessKeyLength:
         self.fitnesses = fitnesses
         return self.get_max_fitnessed_key_length(fitnesses)
 
-
     def calculate_fitnesses(self, text):
         """ Calc. fitnesses for each keylen
 
@@ -26,7 +26,7 @@ class GuessKeyLength:
         prev = 0
         pprev = 0
         fitnesses = []
-        for key_length in range(1,self.max_key_length + 1):
+        for key_length in range(1, self.max_key_length + 1):
             fitness = self.count_equals(text, key_length)
 
             # smaller key-length with nearly the same fitness is preferable
@@ -46,7 +46,6 @@ class GuessKeyLength:
 
         """
         return sum([f[1] for f in fitnesses])
-
 
     def count_equals(self, text, key_length):
         """Count equal chars count for each offset and sum them
@@ -72,7 +71,6 @@ class GuessKeyLength:
                 max_fitness = fitness
                 max_fitnessed_key_length = key_length
         return max_fitnessed_key_length
-
 
     def chars_count_at_offset(self, text, key_length, offset):
         """Get char count for given text, key length and offset
@@ -118,7 +116,6 @@ class GuessKeyLength:
         fitnesses = self.fitnesses
         fitnesses.sort(key=itemgetter(1), reverse=True)
         top10 = fitnesses[:10]
-        best_fitness = top10[0][1]
         top10.sort(key=itemgetter(0))
 
         fitness_sum = self.calculate_fitness_sum(top10)
@@ -126,6 +123,5 @@ class GuessKeyLength:
         for key_length, fitness in top10:
             s1 = str(key_length)
             s2 = str(round(100 * fitness * 1.0 / fitness_sum, 1))
-            result.append({'length' : s1, 'percents' : s2})
+            result.append({'length': s1, 'percents': s2})
         return result
-

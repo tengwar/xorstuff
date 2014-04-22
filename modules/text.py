@@ -1,6 +1,7 @@
 from moduleBaseClass import ModuleBaseClass
 import string
 
+
 class Module(ModuleBaseClass):
     def __init__(self):
         self.header = ''

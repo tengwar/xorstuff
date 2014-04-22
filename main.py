@@ -10,9 +10,9 @@ if __name__ == "__main__":
     xor_stuff = XorStuff()
 
     parser = argparse.ArgumentParser(description='xor stuff with other stuff')
-    parser.add_argument('-f', '--file', 
-                        action='store', 
-                        dest='filename', 
+    parser.add_argument('-f', '--file',
+                        action='store',
+                        dest='filename',
                         help='input file')
     parser.add_argument('-t', '--type',
                         action="store",
@@ -38,8 +38,8 @@ if __name__ == "__main__":
 
     # xor with one key
     if args.xor_key is not None:
-        xorstuff.set_file_content(args.filename)
-        print  xor_stuff.xor(args.xor_key)
+        xor_stuff.set_file_content(args.filename)
+        xor_stuff.xor(args.xor_key)
         exit(0)
     elif args.type is None or args.filename is None:
         print "Select file type (-t) and filename (-f)"
@@ -63,7 +63,9 @@ if __name__ == "__main__":
         fitnesses = guess.print_fitnesses()
         divisors = guess.guess_and_print_divisors()
         print "[*] Probable key length"
-        fitnesses = sorted(fitnesses, key=lambda fitness: float(fitness['percents']), reverse=True) 
+        fitnesses = sorted(fitnesses,
+                           key=lambda fitness: float(fitness['percents']),
+                           reverse=True)
         for fitness in fitnesses:
             print "    %s : %s%%" % (fitness['length'], fitness['percents'])
         print "[*] Most probable key length is %s*n" % divisors
